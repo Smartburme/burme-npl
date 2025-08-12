@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Burme VPN - Game Server</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="app-container">
+        <header class="app-header">
+            <h1>Burme VPN</h1>
+        </header>
+        
+        <nav class="main-nav">
+            <div class="nav-toggle">☰</div>
+            <ul class="nav-menu">
+                <li class="nav-item active" data-page="home">Home</li>
+                <li class="nav-item" data-page="location">Location</li>
+                <li class="nav-item" data-page="about">About</li>
+            </ul>
+        </nav>
+        
+        <main class="app-content">
+            <!-- Pages will be loaded here dynamically -->
+        </main>
+        
+        <aside class="app-sidebar">
+            <div class="connection-status">
+                <div class="connection-animation">
+                    <div class="circle-loader">
+                        <div class="circle-progress">0%</div>
+                    </div>
+                </div>
+                <button class="connect-btn">Connect</button>
+            </div>
+            
+            <div class="admin-section">
+                <button class="admin-btn">Admin</button>
+            </div>
+        </aside>
+        
+        <footer class="app-footer">
+            <p>License © 2023 Burme VPN Game Server</p>
+        </footer>
+    </div>
+    
+    <script src="js/script.js"></script>
+</body>
+</html>
