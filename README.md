@@ -1,7 +1,6 @@
 # BurmeNPL
-## Demo Preview
 
-[![BurmeNPL Demo](assets/demo.png)](smartburme.github.io/burme-npl/)
+[![BurmeNPL Demo](assets/demo.png)](https://smartburme.github.io/burme-npl/main/index.html)
 
 Simple Burmese NLP (Natural Language Processing) library for tokenization, stemming, and stopword removal. Works in **browser** (UMD/CDN) and **NodeJS** environments.
 
