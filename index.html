@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BurmeNPL Chat Demo</title>
+
+  <!-- CDN version -->
+  <script src="https://cdn.jsdelivr.net/gh/Smartburme/Burme-npl@v0.1.0/dist/burme-npl.js"></script>
+
+  <!-- Local fallback -->
+  <script>
+    if (!window.BurmeNPL) {
+      var s = document.createElement('script');
+      s.src = '/libs/burme-npl.js'; // local copy
+      document.head.appendChild(s);
+    }
+  </script>
+
+  <style>
+    body {
+      font-family: "Myanmar3", sans-serif;
+      max-width: 600px;
+      margin: 50px auto;
+      padding: 20px;
+    }
+    input, button {
+      padding: 10px;
+      font-size: 16px;
+    }
+    #output {
+      margin-top: 20px;
+      white-space: pre-wrap;
+      background: #f0f0f0;
+      padding: 10px;
+      border-radius: 5px;
+      min-height: 50px;
+    }
+  </style>
+</head>
+<body>
+  <h1>BurmeNPL Test</h1>
+  <p>စာရိုက်ပြီး tokenize / stem / remove stopwords စမ်းသုံးပါ</p>
+
+  <input type="text" id="msg" placeholder="စာရိုက်ပါ: မင်္ဂလာပါ" style="width: 80%;">
+  <button onclick="runNPL()">Send</button>
+
+  <div id="output"></div>
+
+  <script>
+    function runNPL() {
+      const text = document.getElementById('msg').value;
+      if (!window.BurmeNPL) {
+        alert("BurmeNPL library မ load ရသေးပါ။");
+        return;
+      }
+      const tokens = BurmeNPL.tokenize(text);
+      const stems = BurmeNPL.stemTokens(tokens);
+      const clean = BurmeNPL.removeStopwords(stems);
+
+      document.getElementById('output').textContent =
+        `Tokens: ${tokens.join(', ')}\n` +
+        `Stems: ${stems.join(', ')}\n` +
+        `Clean: ${clean.join(', ')}`;
+
+      console.log({ tokens, stems, clean });
+    }
+  </script>
+</body>
+</html>
