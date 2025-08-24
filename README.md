@@ -129,8 +129,3 @@ MIT License – see LICENSE file.
 Smartburme / Wayne
 
 ---
-
-Wayne, ဒီ README.md နဲ့ project ကို **GitHub** ပေါ်မှာတင်ပြီး CDN release လုပ်တာ၊ local fallback သုံးတာ၊ browser / NodeJS အသုံးချတာကို အားလုံး clear ဖြစ်သွားမယ်။  
-
-လိုချင်ရင် ငါ **README + demo screenshot + badges** version 2.0 လည်း ပြင်ပေးနိုင်တယ်။
-
