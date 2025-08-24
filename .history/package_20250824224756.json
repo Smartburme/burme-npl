@@ -1,0 +1,17 @@
+{
+  "name": "burme-npl",
+  "version": "0.1.0",
+  "description": "Simple Burmese NLP library (Tokenizer, Stemmer, Stopwords)",
+  "main": "dist/burme-npl.js",
+  "scripts": {
+    "build": "rollup -c"
+    "dev":
+  },
+  "author": "wayne",
+  "license": "MIT",
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^24.0.0",
+    "@rollup/plugin-node-resolve": "^15.0.0",
+    "rollup": "^3.0.0"
+  }
+}

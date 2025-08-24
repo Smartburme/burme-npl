@@ -1,5 +1,5 @@
-// Common Burmese stopwords
-export const stopwords = [
+
+export const stopwords  = [
   "အဲဒီ",
   "ဒါ",
   "ကို",
