@@ -1,152 +1,115 @@
-# Burme NPL 
----
+# BurmeNPL
 
-📂 Project Structure
-```
-Burme-npl/
-│
-├── src/
-│   ├── tokenizer.js
-│   ├── stemmer.js
-│   ├── stopwords.js
-│   └── index.js
-│
-├── dist/
-│   └── burme-npl.js        # bundle (browser/CDN)
-│
-├── rollup.config.js
-├── package.json
-└── README.md
-```
+Simple Burmese NLP (Natural Language Processing) library for tokenization, stemming, and stopword removal. Works in **browser** (UMD/CDN) and **NodeJS** environments.
 
 ---
 
-📌 Code Files
+## 📂 Project Structure
 
-src/tokenizer.js
-```
-// Burmese word tokenizer (basic whitespace + punctuation split)
-export function tokenize(text) {
-  if (!text) return [];
-  return text
-    .replace(/[\u104A\u104B.,!?]/g, " ") // Burmese punctuation + English punctuation
-    .split(/\s+/)
-    .filter(Boolean);
-}
+Burme-npl/ │ ├── src/                    # Source files │   ├── tokenizer.js        # Tokenize Burmese text into words │   ├── stemmer.js          # Simple stemming (strip suffixes) │   ├── stopwords.js        # Stopword list + removal │   └── index.js            # Export all APIs │ ├── dist/                   # Bundled files for browser / CDN │   ├── burme-npl.js        # UMD bundle (unminified) │   └── burme-npl.min.js    # UMD bundle (minified) │ ├── main/                   # Optional demo / local test page │   └── index.html │ ├── test/                   # Unit tests (future) ├── rollup.config.js        # Bundler config ├── package.json └── README.md
 
-src/stemmer.js
-
-// Very simple stemming (remove common Burmese particles)
-const suffixes = ["တွေ", "များ", "သည်", "မည်", "ရမည်", "ပေါ်", "ခြင်း"];
-
-export function stem(word) {
-  for (let suffix of suffixes) {
-    if (word.endsWith(suffix)) {
-      return word.slice(0, -suffix.length);
-    }
-  }
-  return word;
-}
-
-export function stemTokens(tokens) {
-  return tokens.map(stem);
-}
-
-src/stopwords.js
-
-// Common Burmese stopwords
-export const stopwords = [
-  "အဲဒီ",
-  "ဒါ",
-  "ကို",
-  "ရဲ့",
-  "ပြီး",
-  "လို့",
-  "အောင်",
-  "တွေ",
-  "များ"
-];
-
-export function removeStopwords(tokens) {
-  return tokens.filter(t => !stopwords.includes(t));
-}
-
-src/index.js
-
-import { tokenize } from "./tokenizer.js";
-import { stem, stemTokens } from "./stemmer.js";
-import { stopwords, removeStopwords } from "./stopwords.js";
-
-export default {
-  tokenize,
-  stem,
-  stemTokens,
-  stopwords,
-  removeStopwords
-};
-
-```
 ---
 
-📌 Rollup Config (rollup.config.js)
-```
-import resolve from "@rollup/plugin-node-resolve";
-import commonjs from "@rollup/plugin-commonjs";
+## ⚡ Features
 
-export default {
-  input: "src/index.js",
-  output: {
-    file: "dist/burme-npl.js",
-    format: "umd",
-    name: "BurmeNPL"
-  },
-  plugins: [resolve(), commonjs()]
-};
+- Tokenize Burmese text into words
+- Simple stemming (strip common Burmese suffixes)
+- Remove common Burmese stopwords
+- Works in browser (CDN or local fallback) and NodeJS
+- UMD bundle for easy inclusion
+- Minified version ready for production
 
-```
 ---
 
-📌 package.json
-```
-{
-  "name": "burme-npl",
-  "version": "0.1.0",
-  "description": "Simple Burmese NLP library (Tokenizer, Stemmer, Stopwords)",
-  "main": "dist/burme-npl.js",
-  "scripts": {
-    "build": "rollup -c"
-  },
-  "author": "Your Name",
-  "license": "MIT",
-  "devDependencies": {
-    "@rollup/plugin-commonjs": "^24.0.0",
-    "@rollup/plugin-node-resolve": "^15.0.0",
-    "rollup": "^3.0.0"
-  }
-}
+## 💻 Installation
 
-```
----
+### 1. Using CDN
 
-📌 CDN သုံးပုံ
+```html
+<script src="https://cdn.jsdelivr.net/gh/Smartburme/Burme-npl@v0.1.0/dist/burme-npl.min.js"></script>
 
-GitHub release ထုတ်ပြီး jsDelivr/CDN link နဲ့ သုံးလို့ရမယ်:
-```
-<script src="https://cdn.jsdelivr.net/gh/USERNAME/Burme-npl@v0.1.0/dist/burme-npl.js"></script>
+2. Local Fallback
+
 <script>
-  const text = "မင်းတို့ရဲ့ project ကို စမ်းသုံးနေတယ်။";
+if (!window.BurmeNPL) {
+  const s = document.createElement('script');
+  s.src = 'dist/burme-npl.min.js'; // local build
+  document.head.appendChild(s);
+}
+</script>
+
+3. NodeJS / NPM
+
+npm install
+npm run build
+
+
+---
+
+🛠 Usage Example
+
+<input id="msg" placeholder="စာရိုက်ပါ: မင်္ဂလာပါ">
+<button onclick="runNPL()">Run</button>
+<div id="output"></div>
+
+<script>
+function runNPL() {
+  const text = document.getElementById('msg').value;
   const tokens = BurmeNPL.tokenize(text);
   const stems = BurmeNPL.stemTokens(tokens);
   const clean = BurmeNPL.removeStopwords(stems);
-  console.log({ tokens, stems, clean });
+
+  document.getElementById('output').textContent =
+    `Tokens: ${tokens.join(', ')}\nStems: ${stems.join(', ')}\nClean: ${clean.join(', ')}`;
+}
 </script>
 
-```
+Result Example:
+
+Input: "ကျောင်းတွေမှာ သူများ သင်တန်းသည်"
+Output:
+
+Tokens: ကျောင်းတွေမှာ, သူများ, သင်တန်းသည်
+Stems: ကျောင်းမှာ, သူ, သင်တန်း
+Clean: ကျောင်းမှာ, သူ, သင်တန်း
+
+
 ---
 
-ဒါနဲ့ မင်း GitHub မှာ တင်ပြီး npm install && npm run build လုပ်တာနဲ့ dist/burme-npl.js ထွက်လာမယ် → CDN တင်နိုင်ပြီ။
+🔧 Development
 
-ချင်းချင်း ပြန်ပြောချင်တာက: သေချာတယ်လို့ CDN မှာ စတင်ချင်ရင် Rollup build ထွက်တဲ့ dist/burme-npl.js ကို Upload ပြီး Release လုပ်ရမယ်။
+1. Install dependencies:
 
-မင်းအတွက် အခု code တွေကို zip ထုပ်ပေးလိုက်မလား?
+
+
+npm install
+
+2. Build:
+
+
+
+npm run build
+
+Output: dist/burme-npl.js (unminified), dist/burme-npl.min.js (minified)
+
+
+
+---
+
+📄 License
+
+MIT License – see LICENSE file.
+
+
+---
+
+👤 Author
+
+Smartburme / Wayne
+
+---
+
+Wayne, ဒီ README.md နဲ့ project ကို **GitHub** ပေါ်မှာတင်ပြီး CDN release လုပ်တာ၊ local fallback သုံးတာ၊ browser / NodeJS အသုံးချတာကို အားလုံး clear ဖြစ်သွားမယ်။  
+
+လိုချင်ရင် ငါ **README + demo screenshot + badges** version 2.0 လည်း ပြင်ပေးနိုင်တယ်။
 
