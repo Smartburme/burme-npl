@@ -5,9 +5,9 @@ Simple Burmese NLP (Natural Language Processing) library for tokenization, stemm
 ---
 
 ## 📂 Project Structure
-
+```
 Burme-npl/ │ ├── src/                    # Source files │   ├── tokenizer.js        # Tokenize Burmese text into words │   ├── stemmer.js          # Simple stemming (strip suffixes) │   ├── stopwords.js        # Stopword list + removal │   └── index.js            # Export all APIs │ ├── dist/                   # Bundled files for browser / CDN │   ├── burme-npl.js        # UMD bundle (unminified) │   └── burme-npl.min.js    # UMD bundle (minified) │ ├── main/                   # Optional demo / local test page │   └── index.html │ ├── test/                   # Unit tests (future) ├── rollup.config.js        # Bundler config ├── package.json └── README.md
-
+```
 ---
 
 ## ⚡ Features
