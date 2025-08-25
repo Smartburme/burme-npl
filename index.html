@@ -4,84 +4,74 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BurmeNPL Demo</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome (optional) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-papEr..." crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <!-- BurmeNPL UMD bundle -->
+  <script src="dist/burme-npl.js"></script>
+
   <style>
     body {
-      font-family: "Myanmar3", sans-serif;
-      max-width: 700px;
-      margin: 50px auto;
-      padding: 20px;
-      background: #f9f9f9;
-      color: #333;
+      background-color: #001f3f; /* နောက်ခံအမဲ */
+      color: #7CFC00;            /* text green light */
+      font-family: 'Roboto', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
     }
-    h1 { text-align: center; color: #4361ee; }
-    input { width: 80%; padding: 10px; font-size: 16px; margin: 10px 0; border-radius: 5px; border: 1px solid #ccc; }
-    button {
-      padding: 10px 20px;
-      font-size: 16px;
-      background-color: #4361ee;
-      color: white;
+
+    #app {
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+
+    p {
+      font-size: 1.2rem;
+    }
+
+    input, button {
+      padding: 0.5rem 1rem;
+      font-size: 1rem;
+      border-radius: 5px;
       border: none;
-      border-radius: 5px;
+      margin-top: 0.5rem;
+    }
+
+    button {
       cursor: pointer;
+      background-color: #006400; /* dark green */
+      color: #7CFC00;
     }
-    button:hover { background-color: #3651b2; }
-    #output {
-      margin-top: 20px;
-      padding: 15px;
-      border-radius: 5px;
-      background: #fff;
-      box-shadow: 0 0 5px rgba(0,0,0,0.1);
-      min-height: 60px;
-      white-space: pre-wrap;
-      font-size: 15px;
-    }
-    footer { margin-top: 40px; text-align: center; font-size: 14px; color: #777; }
   </style>
 </head>
 <body>
+  <div id="app">
+    <h1>BurmeNPL Demo</h1>
+    <p>စာသားကို tokenize လုပ်ရန် အောက်တွင် ရိုက်ထည့်ပါ:</p>
+    <input type="text" id="inputText" placeholder="စာသား ရိုက်ထည့်ပါ" size="40">
+    <br>
+    <button onclick="tokenizeText()">Tokenize</button>
+    <p id="output"></p>
+  </div>
 
-<h1>BurmeNPL</h1>
-<p>စာရိုက်ပြီး tokenize / stem / remove stopwords စမ်းသုံးနိုင်ပါတယ်</p>
+  <script>
+    function tokenizeText() {
+      const text = document.getElementById('inputText').value;
+      if (!text) return;
 
-<input type="text" id="msg" placeholder="စာရိုက်ပါ: မင်္ဂလာပါ">
-<button id="runBtn">Run</button>
-
-<div id="output"></div>
-
-<footer>Powered by BurmeNPL</footer>
-
-<!-- CDN Load -->
-<script src="https://cdn.jsdelivr.net/gh/Smartburme/Burme-npl@v0.1.0/dist/burme-npl.min.js"></script>
-
-<!-- Local fallback -->
-<script>
-if (!window.BurmeNPL) {
-  const s = document.createElement('script');
-  s.src = 'dist/burme-npl.min.js'; // local copy
-  s.onload = () => console.log("BurmeNPL loaded from local fallback");
-  document.head.appendChild(s);
-}
-</script>
-
-<script>
-const runNPL = () => {
-  if (!window.BurmeNPL) {
-    alert("BurmeNPL library မ load ရသေးပါ။");
-    return;
-  }
-  const text = document.getElementById('msg').value;
-  const tokens = BurmeNPL.tokenize(text);
-  const stems = BurmeNPL.stemTokens(tokens);
-  const clean = BurmeNPL.removeStopwords(stems);
-
-  document.getElementById('output').textContent =
-    `Tokens: ${tokens.join(', ')}\nStems: ${stems.join(', ')}\nClean: ${clean.join(', ')}`;
-
-  console.log({ tokens, stems, clean });
-}
-
-document.getElementById('runBtn').addEventListener('click', runNPL);
-</script>
-
+      const tokens = BurmeNPL.tokenizer(text);
+      document.getElementById('output').textContent = "Tokens: " + tokens.join(', ');
+    }
+  </script>
 </body>
 </html>
