@@ -1,8 +1,16 @@
-// Burmese word tokenizer (basic whitespace + punctuation split)
-export function tokenize(text) {
+// src/tokenizer.js
+
+/**
+ * Tokenizer for Burmese + English + Numbers
+ * Splits by whitespace, punctuation, and Myanmar boundaries
+ */
+export function tokenizer(text) {
   if (!text) return [];
-  return text
-    .replace(/[\u104A\u104B.,!?]/g, " ") // Burmese punctuation + English punctuation
-    .split(/\s+/)
-    .filter(Boolean);
+
+  // Myanmar characters (U+1000 - U+109F)
+  const pattern = /[\u1000-\u109F]+|[a-zA-Z]+|\d+|[^\s]/g;
+  const tokens = text.match(pattern) || [];
+
+  // Trim and clean tokens
+  return tokens.map(t => t.trim()).filter(Boolean);
 }
