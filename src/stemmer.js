@@ -1,15 +1,26 @@
-// Very simple stemming (remove common Burmese particles)
-const suffixes = ["တွေ", "များ", "သည်", "မည်", "ရမည်", "ပေါ်", "ခြင်း"];
+// src/stemmer.js
 
-export function stem(word) {
-  for (let suffix of suffixes) {
-    if (word.endsWith(suffix)) {
-      return word.slice(0, -suffix.length);
+/**
+ * Simple Burmese + English stemmer
+ * - Removes common Burmese suffixes (e.g., "များ", "သည်")
+ * - English → trims "ing", "ed", "s"
+ */
+export function stem(token) {
+  if (!token) return "";
+
+  // Burmese stemming rules
+  const burmeseSuffixes = ["များ", "သည်", "ရ", "ပါ"];
+  for (let suffix of burmeseSuffixes) {
+    if (token.endsWith(suffix)) {
+      return token.slice(0, -suffix.length);
     }
   }
-  return word;
-}
 
-export function stemTokens(tokens) {
-  return tokens.map(stem);
+  // English stemming rules
+  let word = token.toLowerCase();
+  if (word.endsWith("ing")) return word.slice(0, -3);
+  if (word.endsWith("ed")) return word.slice(0, -2);
+  if (word.endsWith("s") && word.length > 1) return word.slice(0, -1);
+
+  return token;
 }
