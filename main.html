@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>BurmeNPL — Demo</title>
+
+  <!-- Optional nice font -->
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+
+  <!-- BurmeNPL UMD bundle -->
+  <script src="dist/burme-npl.js"></script>
+
+  <style>
+    :root{
+      --bg:#0b1220;         /* dark navy/black */
+      --fg:#9aff6b;         /* green light */
+      --muted:#78d957;
+      --chip:#0f1a30;
+      --chip-border:#1b2b4a;
+      --accent:#0e7a1f;
+    }
+    *{ box-sizing:border-box }
+    html,body{ height:100% }
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--fg);
+      font-family:"JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+    }
+    .card{
+      width:min(100%, 960px);
+      background:rgba(255,255,255,0.02);
+      border:1px solid #1a2540;
+      border-radius:16px;
+      padding:20px;
+      box-shadow:0 10px 30px rgba(0,0,0,0.35);
+    }
+    h1{
+      margin:0 0 8px 0;
+      font-size:clamp(20px, 3.2vw, 28px);
+      letter-spacing:0.5px;
+    }
+    .sub{ color:var(--muted); margin-bottom:16px; font-size:14px }
+    textarea{
+      width:100%;
+      min-height:130px;
+      background:#091325;
+      color:var(--fg);
+      border:1px solid #1b2b4a;
+      border-radius:12px;
+      padding:14px 16px;
+      outline:none;
+      resize:vertical;
+      caret-color:var(--fg);
+    }
+    .row{ display:flex; gap:10px; flex-wrap:wrap; margin-top:12px }
+    button{
+      background:transparent;
+      border:1px solid var(--chip-border);
+      color:var(--fg);
+      padding:10px 14px;
+      border-radius:12px;
+      cursor:pointer;
+      transition:transform .04s ease, background .2s ease, border-color .2s ease;
+    }
+    button.primary{
+      background:linear-gradient(180deg, #0f2e1a, #0a2314);
+      border-color:#1f6b33;
+    }
+    button:hover{ transform:translateY(-1px); border-color:#2f4d86 }
+    .stats{
+      display:flex; gap:14px; flex-wrap:wrap; margin-top:12px; font-size:12px; color:var(--muted)
+    }
+    .pill{
+      background:var(--chip);
+      border:1px solid var(--chip-border);
+      padding:6px 10px;
+      border-radius:999px;
+    }
+    .panel{
+      margin-top:14px;
+      padding:12px;
+      border:1px dashed #21345d;
+      border-radius:12px;
+      background:#0b162c;
+    }
+    .chips{ display:flex; flex-wrap:wrap; gap:8px; margin-top:8px }
+    .chip{
+      padding:6px 10px;
+      border-radius:999px;
+      background:var(--chip);
+      border:1px solid var(--chip-border);
+      font-size:12px;
+      line-height:1;
+    }
+    .footer{
+      margin-top:16px;
+      font-size:12px;
+      color:#6acb54;
+      opacity:.9
+    }
+    .right{ margin-left:auto }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <h1>BurmeNPL — Browser Demo</h1>
+    <div class="sub">Tokenizer · Stopwords · Stemmer · Process</div>
+
+    <textarea id="txt" placeholder="ဥပမာ — “မင်္ဂလာပါ Wayne၊ BurmeNPL နဲ့ tokenize / stemmer / stopwords စမ်းကြည့်ရအောင်။ I am testing Burmese NLP!”"></textarea>
+
+    <div class="row">
+      <button class="primary" id="btnProcess">Process (filter+stem)</button>
+      <button id="btnTokenize">Tokenize only</button>
+      <button id="btnNoStop">Filter stopwords</button>
+      <button id="btnStem">Stem tokens</button>
+      <span class="right stats" id="stats"></span>
+    </div>
+
+    <div class="panel">
+      <div><strong>Tokens</strong></div>
+      <div class="chips" id="tokens"></div>
+    </div>
+
+    <div class="panel">
+      <div><strong>Filtered (No Stopwords)</strong></div>
+      <div class="chips" id="filtered"></div>
+    </div>
+
+    <div class="panel">
+      <div><strong>Stems</strong></div>
+      <div class="chips" id="stems"></div>
+    </div>
+
+    <div class="footer">Powered by <span style="color:#a2ff7a;font-weight:600">BurmeNPL</span> — <code>dist/burme-npl.js</code></div>
+  </main>
+
+  <script>
+    // Helpers
+    const $ = (sel)=>document.querySelector(sel);
+    const $m = (sel)=>document.querySelectorAll(sel);
+    const elTxt = $('#txt');
+    const elStats = $('#stats');
+    const elTokens = $('#tokens');
+    const elFiltered = $('#filtered');
+    const elStems = $('#stems');
+
+    function renderChips(container, arr){
+      container.innerHTML = '';
+      arr.forEach(t=>{
+        const span = document.createElement('span');
+        span.className='chip';
+        span.textContent=t;
+        container.appendChild(span);
+      });
+    }
+    function updateStats({all=[], noStop=[], stems=[]}){
+      elStats.innerHTML = `
+        <span class="pill">Tokens: ${all.length}</span>
+        <span class="pill">No Stopwords: ${noStop.length}</span>
+        <span class="pill">Stems: ${stems.length}</span>
+      `;
+    }
+
+    // Actions
+    function runTokenize(){
+      const text = elTxt.value.trim();
+      const tokens = BurmeNPL.tokenizer(text);
+      renderChips(elTokens, tokens);
+      renderChips(elFiltered, []);
+      renderChips(elStems, []);
+      updateStats({all:tokens, noStop:[], stems:[]});
+    }
+    function runNoStop(){
+      const text = elTxt.value.trim();
+      const tokens = BurmeNPL.tokenizer(text);
+      const noStop = tokens.filter(t=>!BurmeNPL.isStopword(t));
+      renderChips(elTokens, tokens);
+      renderChips(elFiltered, noStop);
+      renderChips(elStems, []);
+      updateStats({all:tokens, noStop, stems:[]});
+    }
+    function runStem(){
+      const text = elTxt.value.trim();
+      const tokens = BurmeNPL.tokenizer(text);
+      const stems = tokens.map(t=>BurmeNPL.stem(t));
+      renderChips(elTokens, tokens);
+      renderChips(elFiltered, []);
+      renderChips(elStems, stems);
+      updateStats({all:tokens, noStop:[], stems});
+    }
+    function runProcess(){
+      const text = elTxt.value.trim();
+      const tokens = BurmeNPL.tokenizer(text);
+      const noStop = tokens.filter(t=>!BurmeNPL.isStopword(t));
+      const stems = noStop.map(t=>BurmeNPL.stem(t));
+      renderChips(elTokens, tokens);
+      renderChips(elFiltered, noStop);
+      renderChips(elStems, stems);
+      updateStats({all:tokens, noStop, stems});
+    }
+
+    // Bind
+    $('#btnTokenize').addEventListener('click', runTokenize);
+    $('#btnNoStop').addEventListener('click', runNoStop);
+    $('#btnStem').addEventListener('click', runStem);
+    $('#btnProcess').addEventListener('click', runProcess);
+
+    // Demo seed text
+    elTxt.value = 'မင်္ဂလာပါ Wayne၊ BurmeNPL နဲ့ tokenize / stemmer / stopwords စမ်းကြည့်ရအောင်။ I am testing Burmese NLP!';
+  </script>
+</body>
+</html>
